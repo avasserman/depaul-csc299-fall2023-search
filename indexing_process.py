@@ -2,7 +2,7 @@ from documents import Document, TransformedDocument
 from index import Index
 
 
-def text_aquisition() -> list[Document]:
+def text_acquisition() -> list[Document]:
     return [
         Document(doc_id='0', text='red is a color'),
         Document(doc_id='1', text='red and blue')
@@ -26,7 +26,7 @@ def create_index(transformed_documents: list[TransformedDocument]) -> Index:
 
 
 def indexing_process() -> tuple[list[Document], Index]:
-    documents = text_aquisition()
+    documents = text_acquisition()
     transformed_documents = transform_documents(documents)
     index = create_index(transformed_documents)
     return documents, index
