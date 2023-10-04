@@ -20,6 +20,11 @@ class ListDocumentStore:
 
     # *typing.Optional[Document]* is the same as *Document | None*
     def get_by_doc_id(self, doc_id: str) -> typing.Optional[Document]:
+        """
+        Given a doc_id return the document with that doc_id
+        :param doc_id: The doc_id
+        :return: Document with the given doc_id or None if the document is not there
+        """
         for d in self.docs:
             if d.doc_id == doc_id:
                 return d

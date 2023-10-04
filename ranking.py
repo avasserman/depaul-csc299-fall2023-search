@@ -1,3 +1,10 @@
+"""
+Similar to matching.py, but search returns an ordered (ranked) results. In search.py the results
+from search are logically unordered (could be returned in any order). If we want to return 10 "best"
+results from search in this file, you can just take the first 10 results. For search in search.py
+"best" has to be defined externally to introduce logical order to the returned results.
+"""
+
 
 def term_count_relevance(document: str, query: str) -> int:
     query_terms = query.lower().split()
