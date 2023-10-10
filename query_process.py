@@ -1,9 +1,10 @@
 from documents import ListDocumentStore
 from index import Index
+from tokenizer import tokenize
 
 
 def preprocess_query(query_str: str):
-    return query_str.lower().split()
+    return tokenize(query_str)
 
 
 def format_out(results: list[str], document_store: ListDocumentStore, unused_processed_query) -> str:

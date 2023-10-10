@@ -1,5 +1,6 @@
 from documents import Document, TransformedDocument, ListDocumentStore
 from index import Index
+from tokenizer import tokenize
 
 
 def text_acquisition() -> ListDocumentStore:
@@ -12,7 +13,7 @@ def text_acquisition() -> ListDocumentStore:
 
 
 def transform_documents(documents: list[Document]):
-    return [TransformedDocument(doc_id=doc.doc_id, terms=doc.text.lower().split()) for doc in documents]
+    return [TransformedDocument(doc_id=doc.doc_id, terms=tokenize(doc.text)) for doc in documents]
 
 
 def create_index(transformed_documents: list[TransformedDocument]) -> Index:
