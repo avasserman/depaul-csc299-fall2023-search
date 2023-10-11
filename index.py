@@ -1,18 +1,31 @@
+from collections import defaultdict
+
 from documents import TransformedDocument
+
+
+def count_terms(terms: list[str]) -> dict[str, int]:
+    counts = defaultdict(int)
+    for t in terms:
+        counts[t] += 1
+    return counts
+
+
+def combine_term_scores(terms: list[str], score: dict[str, float]) -> float:
+    return sum([score[term] for term in terms])
 
 
 class Index:
     def __init__(self):
-        self.id_to_terms_set = dict()
+        self.id_to_term_counts: dict[str, dict[str, float]] = dict()
 
     def add_document(self, doc: TransformedDocument):
-        self.id_to_terms_set[doc.doc_id] = set(doc.terms)
+        self.id_to_term_counts[doc.doc_id] = count_terms(doc.terms)
 
-    def search(self, processed_query: list[str]) -> list[str]:
-        query_terms_set = set(processed_query)
-        results = []
-        for doc_id, doc_term_set in self.id_to_terms_set.items():
-            if query_terms_set.issubset(doc_term_set):
-                results.append(doc_id)
-        # TODO: Make results into a class.
-        return results
+    def search(self, processed_query: list[str], number_of_results: int) -> list[str]:
+        scores = dict()
+        for doc_id, counts in self.id_to_term_counts.items():
+            score = combine_term_scores(processed_query, self.id_to_term_counts[doc_id])
+            scores[doc_id] = score
+        return sorted(self.id_to_term_counts.keys(), key=scores.get, reverse=True)[:number_of_results]
+
+

@@ -1,4 +1,4 @@
-from documents import ListDocumentStore
+from documents import DictDocumentStore
 from index import Index
 from tokenizer import tokenize
 
@@ -7,7 +7,7 @@ def preprocess_query(query_str: str):
     return tokenize(query_str)
 
 
-def format_out(results: list[str], document_store: ListDocumentStore, unused_processed_query) -> str:
+def format_out(results: list[str], document_store: DictDocumentStore, unused_processed_query) -> str:
     output_string = ''
     for doc_id in results:
         doc = document_store.get_by_doc_id(doc_id)
@@ -15,7 +15,7 @@ def format_out(results: list[str], document_store: ListDocumentStore, unused_pro
     return output_string
 
 
-def query_process(document_store: ListDocumentStore, index: Index, query: str) -> str:
+def query_process(document_store: DictDocumentStore, index: Index, query: str, number_of_results: int) -> str:
     processed_query = preprocess_query(query)
-    results = index.search(processed_query)
+    results = index.search(processed_query, number_of_results)
     return format_out(results, document_store, processed_query)

@@ -1,10 +1,12 @@
-from documents import Document, TransformedDocument, ListDocumentStore
+import json
+
+from documents import Document, TransformedDocument, DictDocumentStore
 from index import Index
 from tokenizer import tokenize
 
 
-def text_acquisition() -> ListDocumentStore:
-    doc_store = ListDocumentStore()
+def text_acquisition() -> DictDocumentStore:
+    doc_store = DictDocumentStore()
     doc_store.add_document(
         Document(doc_id='0', text='red is a color'))
     doc_store.add_document(
@@ -28,8 +30,18 @@ def create_index(transformed_documents: list[TransformedDocument]) -> Index:
     return index
 
 
-def indexing_process() -> tuple[ListDocumentStore, Index]:
-    documents = text_acquisition()
+def docs_from_json(file_path: str) -> DictDocumentStore:
+    doc_store = DictDocumentStore()
+    with open(file_path, 'r') as fp:
+        for line in fp:
+            record = json.loads(line)
+            doc = Document(doc_id=record['doc_id'], text=record['text'])  # Same can be done by doc = Document(**record)
+            doc_store.add_document(doc)
+    return doc_store
+
+
+def indexing_process(file_path: str) -> tuple[DictDocumentStore, Index]:
+    documents = docs_from_json(file_path)
     transformed_documents = transform_documents(documents.list_all())
     index = create_index(transformed_documents)
     return documents, index

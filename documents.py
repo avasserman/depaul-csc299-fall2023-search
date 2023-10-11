@@ -32,3 +32,23 @@ class ListDocumentStore:
 
     def list_all(self) -> list[Document]:
         return self.docs
+
+
+class DictDocumentStore:
+    def __init__(self):
+        self.doc_ids_to_docs = dict()
+
+    def add_document(self, doc: Document):
+        self.doc_ids_to_docs[doc.doc_id] = doc
+
+    # *typing.Optional[Document]* is the same as *Document | None*
+    def get_by_doc_id(self, doc_id: str) -> typing.Optional[Document]:
+        """
+        Given a doc_id return the document with that doc_id
+        :param doc_id: The doc_id
+        :return: Document with the given doc_id or None if the document is not there
+        """
+        return self.doc_ids_to_docs.get(doc_id)  # self.doc_ids_to_docs[doc_id]
+
+    def list_all(self) -> list[Document]:
+        return list(self.doc_ids_to_docs.values())
