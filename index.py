@@ -19,6 +19,7 @@ class Index:
         self.id_to_term_counts: dict[str, dict[str, float]] = dict()
 
     def add_document(self, doc: TransformedDocument):
+        # Mapping from doc_ids to term counts in the corresponding document.
         self.id_to_term_counts[doc.doc_id] = count_terms(doc.terms)
 
     def search(self, processed_query: list[str], number_of_results: int) -> list[str]:
