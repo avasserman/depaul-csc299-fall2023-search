@@ -1,5 +1,6 @@
 from documents import DocumentStore, DictDocumentStore
 from index import Index, BaseIndex
+from indexing_process import indexing_process
 from tf_idf_index import TfIdfIndex
 from tokenizer import tokenize
 
@@ -33,7 +34,13 @@ class QueryProcess:
 
 
 def run_search():
-    qp = QueryProcess.create('', '')
+    input_path = r''
+    docs, index = indexing_process(file_path=input_path, index=TfIdfIndex())
+    docs_path = r''
+    docs.write(docs_path)
+    index_path = r''
+    index.write_jsonl(index_path)
+    qp = QueryProcess.create(document_store_path=docs_path, index_path=index_path)
     query = input('Please enter your query:')
     while query:
         print(qp.search(query=query, number_of_results=10))

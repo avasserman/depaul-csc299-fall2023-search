@@ -14,6 +14,10 @@ class BaseIndex(ABC):
     def search(self, processed_query: list[str], number_of_results: int) -> list[str]:
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def write_jsonl(self, path: str):
+        raise NotImplementedError
+
 
 def count_terms(terms: list[str]) -> dict[str, int]:
     counts = defaultdict(int)
@@ -41,4 +45,5 @@ class Index(BaseIndex):
             scores[doc_id] = score
         return sorted(self.id_to_term_counts.keys(), key=scores.get, reverse=True)[:number_of_results]
 
-
+    def write_jsonl(self, path: str):
+        raise NotImplementedError
