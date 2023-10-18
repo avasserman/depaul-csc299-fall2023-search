@@ -1,3 +1,4 @@
+import json
 import typing
 
 
@@ -12,8 +13,22 @@ class TransformedDocument(typing.NamedTuple):
 
 
 class ListDocumentStore:
-    def __init__(self):
-        self.docs = []
+    def __init__(self, docs: list[Document] | None = None):
+        if docs is None:
+            self.docs = []
+        else:
+            self.docs = docs
+
+    def write(self, path: str):
+        with open(path, 'w') as fp:
+            for d in self.docs:
+                fp.write(json.dumps(d._asdict()) + '\n')
+
+    @staticmethod
+    def read(path: str) -> 'ListDocumentStore':
+        with open(path) as fp:
+            docs = [Document(**json.loads(line)) for line in fp]
+        return ListDocumentStore(docs)
 
     def add_document(self, doc: Document):
         self.docs.append(doc)

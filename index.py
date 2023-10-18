@@ -1,6 +1,18 @@
+import abc
+from abc import ABC
 from collections import defaultdict
 
 from documents import TransformedDocument
+
+
+class BaseIndex(ABC):
+    @abc.abstractmethod
+    def add_document(self, doc: TransformedDocument):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def search(self, processed_query: list[str], number_of_results: int) -> list[str]:
+        raise NotImplementedError
 
 
 def count_terms(terms: list[str]) -> dict[str, int]:
@@ -14,7 +26,7 @@ def combine_term_scores(terms: list[str], score: dict[str, float]) -> float:
     return sum([score[term] for term in terms])
 
 
-class Index:
+class Index(BaseIndex):
     def __init__(self):
         self.id_to_term_counts: dict[str, dict[str, float]] = dict()
 

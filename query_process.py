@@ -1,5 +1,5 @@
 from documents import DictDocumentStore
-from index import Index
+from index import Index, BaseIndex
 from tokenizer import tokenize
 
 
@@ -15,7 +15,7 @@ def format_out(results: list[str], document_store: DictDocumentStore, unused_pro
     return output_string
 
 
-def query_process(document_store: DictDocumentStore, index: Index, query: str, number_of_results: int) -> str:
+def query_process(document_store: DictDocumentStore, index: BaseIndex, query: str, number_of_results: int) -> str:
     processed_query = preprocess_query(query)
     results = index.search(processed_query, number_of_results)
     return format_out(results, document_store, processed_query)
