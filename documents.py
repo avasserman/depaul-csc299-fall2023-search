@@ -1,3 +1,4 @@
+import abc
 import json
 import typing
 
@@ -12,7 +13,25 @@ class TransformedDocument(typing.NamedTuple):
     terms: list[str]
 
 
-class ListDocumentStore:
+class DocumentStore(abc.ABC):
+    @abc.abstractmethod
+    def write(self, path: str):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def add_document(self, doc: Document):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def get_by_doc_id(self, doc_id: str) -> typing.Optional[Document]:
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def list_all(self) -> list[Document]:
+        raise NotImplementedError
+
+
+class ListDocumentStore(DocumentStore):
     def __init__(self, docs: list[Document] | None = None):
         if docs is None:
             self.docs = []
@@ -49,7 +68,7 @@ class ListDocumentStore:
         return self.docs
 
 
-class DictDocumentStore:
+class DictDocumentStore(DocumentStore):
     def __init__(self):
         self.doc_ids_to_docs = dict()
 
