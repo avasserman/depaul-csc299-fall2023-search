@@ -14,7 +14,15 @@ def combine_term_scores(terms: list[str], score: dict[str, float]) -> float:
     return sum([score[term] for term in terms])
 
 
-class Index:
+class BaseIndex:
+    def add_document(self, doc: TransformedDocument):
+        pass
+
+    def search(self, processed_query: list[str], number_of_results: int) -> list[str]:
+        pass
+
+
+class Index(BaseIndex):
     def __init__(self):
         self.id_to_term_counts: dict[str, dict[str, float]] = dict()
 
@@ -28,5 +36,4 @@ class Index:
             score = combine_term_scores(processed_query, self.id_to_term_counts[doc_id])
             scores[doc_id] = score
         return sorted(self.id_to_term_counts.keys(), key=scores.get, reverse=True)[:number_of_results]
-
 

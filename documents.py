@@ -1,3 +1,4 @@
+import json
 import typing
 
 
@@ -11,9 +12,43 @@ class TransformedDocument(typing.NamedTuple):
     terms: list[str]
 
 
-class ListDocumentStore:
-    def __init__(self):
-        self.docs = []
+class DocumentStore:
+    def add_document(self, doc: Document):
+        pass
+
+    def get_by_doc_id(self, doc_id: str) -> typing.Optional[Document]:
+        pass
+
+    def list_all(self) -> list[Document]:
+        pass
+
+    def write(self, path: str):
+        pass
+
+
+class ListDocumentStore(DocumentStore):
+    def __init__(self, docs: list[Document] | None = None):
+        if docs is None:
+            self.docs = []
+        else:
+            self.docs = docs
+
+    def write(self, path: str):
+        with open(path, 'w') as fp:
+            for doc in self.docs:
+                fp.write(json.dumps(doc._asdict()) + '\n')
+
+    @staticmethod
+    def read(path: str) -> 'ListDocumentStore':
+        docs = []
+        with open(path) as fp:
+            for line in fp:
+                record = json.loads(line)
+                docs.append(Document(doc_id=record['doc_id'], text=record['text']))
+        return ListDocumentStore(docs)
+            # return ListDocumentStore([
+            #     Document(**json.loads(line)) for line in fp
+            # ])
 
     def add_document(self, doc: Document):
         self.docs.append(doc)
@@ -34,7 +69,7 @@ class ListDocumentStore:
         return self.docs
 
 
-class DictDocumentStore:
+class DictDocumentStore(DocumentStore):
     def __init__(self):
         self.doc_ids_to_docs = dict()
 

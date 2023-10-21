@@ -1,11 +1,12 @@
 import json
 
-from documents import Document, TransformedDocument, DictDocumentStore
-from index import Index
+from documents import Document, TransformedDocument, DictDocumentStore, DocumentStore
+from index import Index, BaseIndex
+from tf_idf_index import TfIdfIndex
 from tokenizer import tokenize
 
 
-def text_acquisition() -> DictDocumentStore:
+def text_acquisition() -> DocumentStore:
     doc_store = DictDocumentStore()
     doc_store.add_document(
         Document(doc_id='0', text='red is a color'))
@@ -18,19 +19,19 @@ def transform_documents(documents: list[Document]):
     return [TransformedDocument(doc_id=doc.doc_id, terms=tokenize(doc.text)) for doc in documents]
 
 
-def create_index(transformed_documents: list[TransformedDocument]) -> Index:
+def create_index(transformed_documents: list[TransformedDocument]) -> BaseIndex:
     """
     Takes a list of TransformedDocument and creates an index out of them.
     :param transformed_documents: list of TransformedDocuments.
-    :return: Index
+    :return: BaseIndex
     """
-    index = Index()
+    index = TfIdfIndex()
     for doc in transformed_documents:
         index.add_document(doc)
     return index
 
 
-def docs_from_json(file_path: str) -> DictDocumentStore:
+def docs_from_json(file_path: str) -> DocumentStore:
     doc_store = DictDocumentStore()
     with open(file_path, 'r') as fp:
         for line in fp:
@@ -40,7 +41,7 @@ def docs_from_json(file_path: str) -> DictDocumentStore:
     return doc_store
 
 
-def indexing_process(file_path: str) -> tuple[DictDocumentStore, Index]:
+def indexing_process(file_path: str) -> tuple[DocumentStore, BaseIndex]:
     documents = docs_from_json(file_path)
     transformed_documents = transform_documents(documents.list_all())
     index = create_index(transformed_documents)
