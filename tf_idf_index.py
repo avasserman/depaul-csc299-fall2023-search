@@ -14,6 +14,7 @@ class TfIdfIndex(BaseIndex):
     def __init__(self):
         # Mapping of terms to the number of documents they occur in.
         self.doc_counts = Counter()
+        # Mapping doc_id to term counts in the corresponding document.
         self.id_to_term_counts: dict[str, Counter] = dict()
 
     def write(self, path: str):
