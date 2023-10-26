@@ -56,7 +56,9 @@ class TfIdfIndex(BaseIndex):
         return math.log(len(self.id_to_term_counts) / self.doc_counts[term])
 
     def tf_idf(self, term, doc_id):
-        return self.term_frequency(term, doc_id) * self.inverse_document_frequency(term)
+        if term in self.doc_counts:
+            return self.term_frequency(term, doc_id) * self.inverse_document_frequency(term)
+        return 0
 
     def combine_term_scores(self, terms: list[str], doc_id) -> float:
         return sum([self.tf_idf(term, doc_id) for term in terms])

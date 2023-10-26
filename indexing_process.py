@@ -43,6 +43,10 @@ def docs_from_json(file_path: str) -> DocumentStore:
 
 def indexing_process(file_path: str) -> tuple[DocumentStore, BaseIndex]:
     documents = docs_from_json(file_path)
+    return indexing_process_from_doc_collection(documents)
+
+
+def indexing_process_from_doc_collection(documents) -> tuple[DocumentStore, BaseIndex]:
     transformed_documents = transform_documents(documents.list_all())
     index = create_index(transformed_documents)
     return documents, index
