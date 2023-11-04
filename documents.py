@@ -70,11 +70,28 @@ class ListDocumentStore(DocumentStore):
 
 
 class DictDocumentStore(DocumentStore):
-    def __init__(self):
-        self.doc_ids_to_docs = dict()
+    def __init__(self, doc_ids_to_docs: dict[str, Document] | None = None):
+        if doc_ids_to_docs is None:
+            self.doc_ids_to_docs = dict()
+        else:
+            self.doc_ids_to_docs = doc_ids_to_docs
 
     def add_document(self, doc: Document):
         self.doc_ids_to_docs[doc.doc_id] = doc
+
+    def write(self, path: str):
+        with open(path, 'w') as fp:
+            for doc in self.doc_ids_to_docs.values():
+                fp.write(json.dumps(doc._asdict()) + '\n')
+
+    @staticmethod
+    def read(path: str) -> 'DictDocumentStore':
+        docs = dict()
+        with open(path) as fp:
+            for line in fp:
+                record = json.loads(line)
+                docs[record['doc_id']] = Document(doc_id=record['doc_id'], text=record['text'])
+        return DictDocumentStore(docs)
 
     # *typing.Optional[Document]* is the same as *Document | None*
     def get_by_doc_id(self, doc_id: str) -> typing.Optional[Document]:

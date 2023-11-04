@@ -30,13 +30,18 @@ def format_out(results: list[str], document_store: DocumentStore, unused_process
 
 
 class QueryProcess:
-    def __init__(self, document_store: DocumentStore, index: BaseIndex,
+    def __init__(self, document_store: DocumentStore, index: BaseIndex, stopwords: set[str] = None,
                  output_formatter=FullDocumentsOutputFormatter()):
         self.document_store = document_store
         self.index = index
-        self. output_formatter =  output_formatter
+        self.stopwords = stopwords
+        self.output_formatter = output_formatter
 
     def search(self, query: str, number_of_results: int) -> str:
-        processed_query = preprocess_query(query)
+        if self.stopwords is None:
+            processed_query = preprocess_query(query)
+        else:
+            processed_query = [term for term in preprocess_query(query)
+                               if term not in self.stopwords]
         results = self.index.search(processed_query, number_of_results)
         return self.output_formatter.format_out(results, self.document_store, processed_query)
