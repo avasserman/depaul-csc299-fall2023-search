@@ -22,6 +22,7 @@ class TfIdfIndex(BaseIndex):
         with open(path, 'w') as fp:
             fp.write(json.dumps({
                 '__metadata__': {
+                    'total_documents_count': self.total_documents_count,
                     'doc_counts': [
                         {
                             'term': term,
@@ -31,15 +32,15 @@ class TfIdfIndex(BaseIndex):
                     ]
                 }
             }) + '\n')
-            for doc_id, counts in self.term_to_doc_id_tf_scores.items():
+            for term, scores in self.term_to_doc_id_tf_scores.items():
                 fp.write(json.dumps({
-                    'doc_id': doc_id,
-                    'counts': [
+                    'term': term,
+                    'scores': [
                         {
-                            'term': term,
-                            'count': count
+                            'doc_id': doc_id,
+                            'score': score
                         }
-                        for term, count in counts.items()
+                        for doc_id, score in scores.items()
                     ]
                 }) + '\n')
 
